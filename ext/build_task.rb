@@ -13,7 +13,7 @@ class BuildTask < Rake::TaskLib
   end
 
   def define_tasks
-    artifact = File.join(@lib_dir, "#{@name}.#{RbConfig::CONFIG["DLEXT"]}")
+    artifact = File.join(lib_dir, "#{@name}.#{RbConfig::CONFIG["DLEXT"]}")
     cargo_toml = File.join(cargo_dir, "Cargo.toml")
 
     desc "Remove build cache"
@@ -35,8 +35,10 @@ class BuildTask < Rake::TaskLib
       sh env, "cargo", "build", "--release", "--manifest-path", cargo_toml
     end
 
+    directory lib_dir
+
     desc "Place compiled library"
-    task :install => :build do
+    task :install => [:build, lib_dir] do
       cargo_name = JSON.parse(`cargo metadata --format-version=1 --manifest-path #{cargo_toml}`).dig("packages", 0, "name")
       cargo_out = case RUBY_PLATFORM
         when /mingw/; "target/release/#{cargo_name}.dll"
