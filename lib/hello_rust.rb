@@ -1,6 +1,1 @@
-require "hello_rust/version"
-
-module HelloRust
-  class Error < StandardError; end
-  # Your code goes here...
-end
+require 'hello_rust/hello_rust'
