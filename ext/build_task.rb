@@ -2,28 +2,29 @@ require "json"
 require "rake/tasklib"
 
 class BuildTask < Rake::TaskLib
-  attr_reader :name, :cargo_dir, :lib_dir
+  attr_reader :name, :lib_dir
+  attr_reader :manifest_file
 
   def initialize(name, cargo_dir, lib_dir)
     @name = name
-    @cargo_dir = cargo_dir
     @lib_dir = lib_dir
+    @manifest_file = File.join(cargo_dir, "Cargo.toml")
 
     define_tasks
   end
 
   def define_tasks
-    artifact = File.join(lib_dir, "#{@name}.#{RbConfig::CONFIG["DLEXT"]}")
-    cargo_toml = File.join(cargo_dir, "Cargo.toml")
+    target_so_dir = File.join(lib_dir, name)
+    target_so = File.join(target_so_dir, "#{name}.#{RbConfig::CONFIG["DLEXT"]}")
 
     desc "Remove build cache"
     task :clean do
-      sh "cargo", "clean", "--manifest-path", cargo_toml
+      sh "cargo", "clean", "--manifest-path", manifest_file
     end
 
     desc "Remove build cache and compiled library"
     task :clobber => :clean do
-      rm_f artifact
+      rm_f target_so
     end
 
     desc "Compile native extension"
@@ -32,20 +33,25 @@ class BuildTask < Rake::TaskLib
       if RUBY_PLATFORM =~ /mingw/
         env["RUSTUP_TOOLCHAIN"] = "stable-#{RbConfig::CONFIG["host_cpu"]}-pc-windows-gnu"
       end
-      sh env, "cargo", "build", "--release", "--manifest-path", cargo_toml
+      sh env, "cargo", "build", "--release", "--manifest-path", manifest_file
     end
 
-    directory lib_dir
+    directory target_so_dir
 
     desc "Place compiled library"
-    task :install => [:build, lib_dir] do
-      cargo_name = JSON.parse(`cargo metadata --format-version=1 --manifest-path #{cargo_toml}`).dig("packages", 0, "name")
-      cargo_out = case RUBY_PLATFORM
-        when /mingw/; "target/release/#{cargo_name}.dll"
-        when /darwin/; "target/release/lib#{cargo_name}.dylib"
-        when /linux/; "target/release/lib#{cargo_name}.so"
-        end
-      cp cargo_out, artifact, preserve: true, verbose: true
+    task :install => [:build, target_so_dir] do
+      cp cargo_output, target_so, preserve: true, verbose: true
     end
+  end
+
+  def cargo_output
+    metadata = JSON.parse(`cargo metadata --format-version=1 --manifest-path #{manifest_file}`)
+    cargo_name = metadata.dig("packages", 0, "name")
+    filename = case RUBY_PLATFORM
+      when /mingw/; "#{cargo_name}.dll"
+      when /darwin/; "lib#{cargo_name}.dylib"
+      when /linux/; "lib#{cargo_name}.so"
+      end
+    File.join(metadata["target_directory"], "release", filename)
   end
 end

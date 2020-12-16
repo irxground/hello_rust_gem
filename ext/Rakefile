@@ -1,0 +1,6 @@
+require_relative "./build_task"
+BuildTask.new("hello_rust", File.expand_path("../..", __FILE__), ENV.fetch("RUBYLIBDIR"))
+
+task :default => :install do
+  Rake::Task[:clean].invoke
+end
