@@ -1,1 +1,1 @@
-require 'hello_rust/hello_rust'
+require "hello_rust/hello_rust"

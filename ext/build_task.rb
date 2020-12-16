@@ -1,5 +1,5 @@
-require 'json'
-require 'rake/tasklib'
+require "json"
+require "rake/tasklib"
 
 class BuildTask < Rake::TaskLib
   attr_reader :name, :cargo_dir, :lib_dir
@@ -38,11 +38,10 @@ class BuildTask < Rake::TaskLib
     desc "Place compiled library"
     task :install => :build do
       cargo_name = JSON.parse(`cargo metadata --format-version=1 --manifest-path #{cargo_toml}`).dig("packages", 0, "name")
-      cargo_out =
-        case RUBY_PLATFORM
-        when /mingw/ ; "target/release/#{cargo_name}.dll"
+      cargo_out = case RUBY_PLATFORM
+        when /mingw/; "target/release/#{cargo_name}.dll"
         when /darwin/; "target/release/lib#{cargo_name}.dylib"
-        when /linux/ ; "target/release/lib#{cargo_name}.so"
+        when /linux/; "target/release/lib#{cargo_name}.so"
         end
       cp cargo_out, artifact, preserve: true, verbose: true
     end
