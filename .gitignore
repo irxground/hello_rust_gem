@@ -1,4 +1,16 @@
 /target
 Cargo.lock
+/.bundle/
+/.yardoc
+/_yardoc/
+/coverage/
+/doc/
+/pkg/
+/spec/reports/
+/tmp/
 *.bundle
 *.so
+
+# rspec failure tracking
+.rspec_status
+
