@@ -7,7 +7,6 @@ description = "a Ruby native extension using Rust with minimal dependencies"
 homepage = "https://github.com/irxground/hello_rust_gem"
 repository = "https://github.com/irxground/hello_rust_gem"
 license = "MIT"
-license-file = "LICENSE"
 
 [lib]
 crate-type = ["cdylib"]
