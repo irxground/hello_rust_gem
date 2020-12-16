@@ -17,8 +17,14 @@ class BuildTask < Rake::TaskLib
     target_so_dir = File.join(lib_dir, name)
     target_so = File.join(target_so_dir, "#{name}.#{RbConfig::CONFIG["DLEXT"]}")
 
+    task :cargo do
+      unless system "cargo", "-V"
+        raise "`cargo` command not found. Please install Rust compiler: https://www.rust-lang.org/"
+      end
+    end
+
     desc "Remove build cache"
-    task :clean do
+    task :clean => :cargo do
       sh "cargo", "clean", "--manifest-path", manifest_file
     end
 
@@ -28,7 +34,7 @@ class BuildTask < Rake::TaskLib
     end
 
     desc "Compile native extension"
-    task :build do
+    task :build => :cargo do
       env = {}
       if RUBY_PLATFORM =~ /mingw/
         env["RUSTUP_TOOLCHAIN"] = "stable-#{RbConfig::CONFIG["host_cpu"]}-pc-windows-gnu"

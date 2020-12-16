@@ -8,4 +8,4 @@ This project aims to create a Ruby native extension using Rust with minimal depe
 - [x] Windows 10 (64bit) + RubyInstaller (x86)
 - [ ] macOS Catalina
 - [x] macOS Catalina + rbenv
-- [ ] Amazon linux 2 (x86_64) + rbenv
+- [x] Amazon linux 2 (x86_64) + rbenv
