@@ -1,5 +1,7 @@
 # hello_rust_gem
 
+[![Gem Version](https://badge.fury.io/rb/hello_rust.svg)](https://badge.fury.io/rb/hello_rust)
+
 This project aims to create a Ruby native extension using Rust with minimal dependencies.
 
 ## Confirmed platform
