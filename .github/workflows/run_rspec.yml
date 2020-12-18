@@ -10,10 +10,8 @@ jobs:
   build:
     strategy:
       matrix:
-        entry:
-          - { host: ubuntu-latest }
-          - { host: macos-latest }
-    runs-on: ${{ matrix.entry.host }}
+        os: [macos-latest, windows-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v2
     - uses: actions-rs/toolchain@v1
