@@ -11,7 +11,7 @@ jobs:
     strategy:
       matrix:
         os: [macos-latest, windows-latest, ubuntu-latest]
-        ruby: [2.6, 2.7, head]
+        ruby: [2.6, 2.7]
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v2
