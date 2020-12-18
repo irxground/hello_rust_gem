@@ -8,11 +8,7 @@ on:
 
 jobs:
   build:
-    strategy:
-      matrix:
-        os: [macos-latest, ubuntu-latest]
-        ruby: [2.6, 2.7]
-    runs-on: ${{ matrix.os }}
+    runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
     - uses: actions-rs/toolchain@v1
@@ -20,7 +16,7 @@ jobs:
         toolchain: stable
     - uses: ruby/setup-ruby@v1
       with:
-        ruby-version: ${{ matrix.ruby }}
+        ruby-version: 2.7.2
         bundler-cache: true
     - run: bundle exec rake --version
     - run: bundle exec rake default
