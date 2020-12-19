@@ -67,6 +67,8 @@ class BuildTask < Rake::TaskLib
       when /mingw/; "#{cargo_name}.dll"
       when /darwin/; "lib#{cargo_name}.dylib"
       when /linux/; "lib#{cargo_name}.so"
+      else
+        raise "'#{}' is not supported RUBY_PLATFORM"
       end
     File.join(metadata["target_directory"], "release", filename)
   end
