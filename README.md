@@ -18,7 +18,7 @@ p HelloRust::VERSION
 ```
 
 
-## Confirmed platform
+## (manual) Confirmed platform
 
 - [x] Windows 10 (64bit) + RubyInstaller (x64)
 - [x] Windows 10 (64bit) + RubyInstaller (x86)
