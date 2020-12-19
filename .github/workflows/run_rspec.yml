@@ -36,7 +36,7 @@ jobs:
         toolchain: stable
     - uses: ruby/setup-ruby@v1
       with:
-        ruby-version: 2.7
+        ruby-version: ${{ matrix.ruby }}
     - run: bundle install
     - run: rake
   # build-others:
