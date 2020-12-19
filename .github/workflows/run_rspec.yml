@@ -50,9 +50,6 @@ jobs:
     - uses: actions-rs/toolchain@v1
       with:
         toolchain: stable
-    - uses: MSP-Greg/setup-ruby-pkgs@v1
-      with:
-        ruby-version: 2.7
-        brew: true
+    - run: brew install ruby
     - run: bundle install
     - run: rake
