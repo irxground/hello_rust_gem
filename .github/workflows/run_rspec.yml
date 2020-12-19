@@ -25,6 +25,9 @@ jobs:
     - run: bundle exec rake --version
     - run: bundle exec rake default
   build-win:
+    strategy:
+      matrix:
+        ruby: [2.6, 2.7, mingw, mswin]
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
@@ -36,15 +39,15 @@ jobs:
         ruby-version: 2.7
     - run: bundle install
     - run: rake
-  build-others:
-    runs-on: macos-latest
-    steps:
-    - uses: actions/checkout@v2
-    - uses: actions-rs/toolchain@v1
-      with:
-        toolchain: stable
-    - uses: MSP-Greg/setup-ruby-pkgs@v1
-      with:
-        brew: true
-    - run: bundle install
-    - run: rake
+  # build-others:
+  #   runs-on: macos-latest
+  #   steps:
+  #   - uses: actions/checkout@v2
+  #   - uses: actions-rs/toolchain@v1
+  #     with:
+  #       toolchain: stable
+  #   - uses: MSP-Greg/setup-ruby-pkgs@v1
+  #     with:
+  #       brew: true
+  #   - run: bundle install
+  #   - run: rake
