@@ -27,7 +27,7 @@ jobs:
   build-win:
     strategy:
       matrix:
-        ruby: [2.6, 2.7, mingw, mswin]
+        ruby: [2.6, 2.7, mingw]
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
