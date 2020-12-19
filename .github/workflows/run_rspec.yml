@@ -25,6 +25,13 @@ jobs:
     - run: bundle exec rake --version
     - run: bundle exec rake default
   build-win:
+    strategy:
+      matrix:
+        ruby:
+          - 2.6
+          - 2.7
+          - mingw
+          - mswin
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
@@ -33,6 +40,16 @@ jobs:
         toolchain: stable
     - uses: ruby/setup-ruby@v1
       with:
-        ruby-version: 2.7
+        ruby-version: ${{ matrix.ruby }}
+    - run: bundle install
+    - run: rake
+  build-macos:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+    - run: brew install ruby
     - run: bundle install
     - run: rake

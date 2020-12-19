@@ -35,10 +35,7 @@ class BuildTask < Rake::TaskLib
 
     desc "Compile native extension"
     task :build => :cargo do
-      env = {}
-      if RUBY_PLATFORM =~ /mingw/
-        env["RUSTUP_TOOLCHAIN"] = "stable-#{RbConfig::CONFIG["host_cpu"]}-pc-windows-gnu"
-      end
+      env = rustup_toolchain({})
       sh env, "cargo", "build", "--release", "--manifest-path", manifest_file
     end
 
@@ -50,13 +47,39 @@ class BuildTask < Rake::TaskLib
     end
   end
 
+  def rustup_toolchain(env)
+    key = "RUSTUP_TOOLCHAIN"
+    unless ENV[key]
+      # See: https://doc.rust-lang.org/nightly/rustc/platform-support.html
+      case RUBY_PLATFORM
+      when /mingw/
+        env[key] = "stable-#{host_cpu}-pc-windows-gnu"
+      when /mswin/
+        env[key] = "stable-#{host_cpu}-pc-windows-msvc"
+      end
+    end
+    env
+  end
+
+  def host_cpu
+    host_cpu = RbConfig::CONFIG["host_cpu"]
+    case host_cpu
+    when "x64"
+      "x86_64"
+    else
+      host_cpu
+    end
+  end
+
   def cargo_output
     metadata = JSON.parse(`cargo metadata --format-version=1 --manifest-path #{manifest_file}`)
     cargo_name = metadata.dig("packages", 0, "name")
     filename = case RUBY_PLATFORM
-      when /mingw/; "#{cargo_name}.dll"
+      when /mingw|mswin/; "#{cargo_name}.dll"
       when /darwin/; "lib#{cargo_name}.dylib"
       when /linux/; "lib#{cargo_name}.so"
+      else
+        raise "'#{RUBY_PLATFORM}' is not supported RUBY_PLATFORM"
       end
     File.join(metadata["target_directory"], "release", filename)
   end
