@@ -37,7 +37,7 @@ class BuildTask < Rake::TaskLib
     task :build => :cargo do
       env = {}
       if RUBY_PLATFORM =~ /mingw/
-        env["RUSTUP_TOOLCHAIN"] = "stable-#{RbConfig::CONFIG["host_cpu"]}-pc-windows-gnu"
+        env["RUSTUP_TOOLCHAIN"] = "stable-#{host_cpu}-pc-windows-gnu"
       end
       sh env, "cargo", "build", "--release", "--manifest-path", manifest_file
     end
@@ -47,6 +47,16 @@ class BuildTask < Rake::TaskLib
     desc "Place compiled library"
     task :install => [:build, target_so_dir] do
       cp cargo_output, target_so, preserve: true, verbose: true
+    end
+  end
+
+  def host_cpu
+    host_cpu = RbConfig::CONFIG["host_cpu"]
+    case host_cpu
+    when "x64"
+      "x86_64"
+    else
+      host_cpu
     end
   end
 
