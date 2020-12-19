@@ -52,6 +52,7 @@ jobs:
         toolchain: stable
     - uses: MSP-Greg/setup-ruby-pkgs@v1
       with:
+        ruby-version: -
         brew: true
     - run: bundle install
     - run: rake
